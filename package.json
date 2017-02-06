@@ -18,6 +18,7 @@
     "@types/gulp-typescript": "^0.0.32",
     "@types/merge2": "^0.3.29",
     "@types/mocha": "^2.2.33",
+    "@types/mongodb": "^2.1.38",
     "@types/should": "^8.1.30",
     "@types/when": "^2.4.28",
     "assert": ">=0.0.1",
@@ -40,13 +41,13 @@
     "remap-istanbul": "^0.9.0",
     "should": ">= 0.0.1",
     "tslint": "^4.4.2",
-    "tslint-stylish": "^2.1.0-beta",
     "typedoc": "^0.5.1",
     "typescript": "^2.1.5"
   },
   "dependencies": {
     "@molecuel/core": "^2.0.6",
-    "@molecuel/di": "^0.2.0"
+    "@molecuel/di": "^0.2.0",
+    "mongodb": "^2.2.22"
   },
   "devconfig": {
     "paths": {

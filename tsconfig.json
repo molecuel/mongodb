@@ -10,7 +10,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "files": [
+  "include": [
+    "src/**/*.ts"
   ],
   "exclude": [],
   "atom": {

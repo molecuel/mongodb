@@ -32,7 +32,7 @@ export class Gulpfile {
    */
   @Task('config::readpkgjson')
   readpkgjson(): any {
-    var configobject = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+    let configobject = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     if (configobject && configobject.devconfig) {
       this.config = configobject.devconfig;
     }
@@ -130,7 +130,7 @@ export class Gulpfile {
             out: './docs',
             mode: 'file',
             disableOutputCheck: false,
-            gaID: 'UA-XXXX',
+            gaID: 'UA-89800241-1',
             // TypeDoc options (see typedoc docs)
             ignoreCompilerErrors: true
         }));
