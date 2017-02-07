@@ -28,10 +28,27 @@ export class MlclMongoDb implements IMlclDatabase {
     return this._database;
   }
 
-  public save(document: Object) {
-    console.log(this._database);
+  public async save(document: Object, collection: string): Promise<any> {
+    // console.log(this._database);
+    let update = JSON.parse(JSON.stringify(document));
+    delete update.id;
+    try {
+      if (!this.database[collection]) {
+        let collres = await this.database.createCollection(collection);
+        console.log(collres);
+      }
+      let saved = await this.database[collection].update({id: (<any>document).id}, update, {upsert: true});
+      return Promise.resolve(saved);
+    }
+    catch (e) {
+      return Promise.reject(e);
+    }
   }
 
   public update(document: Object) {
+  }
+
+  public find(query: Object) {
+
   }
 }

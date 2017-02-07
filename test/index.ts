@@ -11,10 +11,11 @@ describe('mongodb', function() {
   before(() => {
     di.bootstrap(MlclMongoDb);
   });
+  let db;
   describe('init', function() {
     it('should connect', async function() {
       let connection;
-      let db = di.getInstance('MlclMongoDb', 'mongodb://localhost/mongodb_test');
+      db = di.getInstance('MlclMongoDb', 'mongodb://localhost/mongodb_test');
       try {
         connection = await db.connect();
         // console.log({db:db, connection: connection});
@@ -28,8 +29,15 @@ describe('mongodb', function() {
     });
   }); // category end
   describe('interaction', function() {
+    let testCar = {
+      id: 1,
+      model: 'C4',
+      make: 'Aston Maaaartin',
+      engine: 1
+    }
     it('should save a new document (in its collection)', async function() {
-
+      // let response = await db.save(testCar, 'cars_test');
+      // console.log(response);
     });
     it('should find the saved document (in its collection)', function() {
 
