@@ -6,8 +6,8 @@ import {IMlclDatabase} from '@molecuel/database';
 @injectable
 export class MlclMongoDb implements IMlclDatabase {
   private _database: Db;
-  private _connectionurl: string;
-  constructor() {}
+  // private _connectionurl: string;
+  constructor(private _connectionurl: string) {}
 
   public async connect(): Promise<Db|Error> {
     try {
