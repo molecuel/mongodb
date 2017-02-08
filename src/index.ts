@@ -1,6 +1,7 @@
 'use strict';
 import {injectable} from '@molecuel/di';
 import {MongoClient, Db} from 'mongodb';
+import * as _ from 'lodash';
 import {IMlclDatabase} from '@molecuel/database';
 
 @injectable
@@ -25,15 +26,31 @@ export class MlclMongoDb implements IMlclDatabase {
    * @memberOf MlclMongoDb
    */
   public get database() {
-    return this._database;
+    let frozenDb = this.deepFreeze(this._database);
+    return frozenDb;
+  }
+
+  protected deepFreeze(obj: Object, depth?: number) {
+    if (typeof depth === 'undefined') {
+      depth = 5;
+    }
+    let keys = Object.keys(obj);
+    for (let prop in obj) {
+      if (_.includes(keys, prop)) {
+        if (depth > 0 && (typeof obj[prop] === 'object' || typeof obj[prop] === 'function') && obj[prop] !== null && obj[prop] !== undefined) {
+          depth--;
+          this.deepFreeze(obj[prop], depth);
+        }
+      }
+    }
+    return Object.freeze(obj);
   }
 
   public async save(document: Object, collectionName: string): Promise<any> {
-    // console.log(this._database);
     let update = JSON.parse(JSON.stringify(document));
     delete update.id;
     try {
-      let saved = await (await this.database.collection(collectionName)).updateOne({_id: (<any>document).id}, update, {upsert: true});
+      let saved = await (await this._database.collection(collectionName)).updateOne({_id: (<any>document).id}, update, {upsert: true});
       return Promise.resolve(saved.result ? saved.result : saved);
     }
     catch (e) {
@@ -43,7 +60,7 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async update(query: Object, update: Object, collectionName: string): Promise<any> {
     try {
-      let saved = await (await this.database.collection(collectionName)).update(query, update);
+      let saved = await (await this._database.collection(collectionName)).update(query, update);
       return Promise.resolve((<any>saved).result ? (<any>saved).result : saved);
     }
     catch (e) {
@@ -55,7 +72,7 @@ export class MlclMongoDb implements IMlclDatabase {
     try {
       let options: any = {};
       options.multi = true;
-      let saved = await (await this.database.collection(collectionName)).updateMany(query, update, options, null);
+      let saved = await (await this._database.collection(collectionName)).updateMany(query, update, options, null);
       return Promise.resolve((<any>saved).result ? (<any>saved).result : saved);
     }
     catch (e) {
@@ -65,7 +82,7 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async find(query: Object, collectionName: string): Promise<any> {
     try {
-      let response = await (await this.database.collection(collectionName)).find(query);
+      let response = await (await this._database.collection(collectionName)).find(query);
       return Promise.resolve(response.toArray());
     } catch (error) {
       return Promise.reject(error);
@@ -74,7 +91,7 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async findOne(query: Object, collectionName: string): Promise<any> {
     try {
-      let response = await (await this.database.collection(collectionName)).find(query);
+      let response = await (await this._database.collection(collectionName)).find(query);
       return Promise.resolve(response.next());
     } catch (error) {
       return Promise.reject(error);
@@ -83,7 +100,7 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async dropCollection(collectionName: string): Promise<any> {
     try {
-      let response = await this.database.dropCollection(collectionName);
+      let response = await this._database.dropCollection(collectionName);
       return Promise.resolve(response);
     } catch (error) {
       return Promise.reject(error);

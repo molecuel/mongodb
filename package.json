@@ -47,6 +47,7 @@
   "dependencies": {
     "@molecuel/core": "^2.0.6",
     "@molecuel/di": "^0.2.0",
+    "lodash": "^4.17.4",
     "mongodb": "^2.2.22"
   },
   "devconfig": {

@@ -37,6 +37,16 @@ describe('mongodb', function() {
       db.should.be.instanceOf(MlclMongoDb);
       should.exist(connection);
     });
+    it('should not be possible to modify readonly Db', function () {
+      try {
+        db.database.s.databaseName = 'labor_test';
+        db.database.domain = 'labor';
+        db.database.s.databaseName.should.not.equal('labor_test');
+        db.database.domain.should.not.equal('labor');
+      } catch (error) {
+        should.exist(error);
+      }
+    });
   }); // category end
   describe('interaction', function() {
     const VEHICLE_COLLECTION = 'vehicle_test';
