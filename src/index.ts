@@ -10,10 +10,10 @@ export class MlclMongoDb implements IMlclDatabase {
   // private _connectionurl: string;
   constructor(private _connectionurl: string) {}
 
-  public async connect(): Promise<Db|Error> {
+  public async connect(): Promise<Readonly<Object>|Error> {
     try {
       this._database = await MongoClient.connect(this._connectionurl);
-      return Promise.resolve(this._database);
+      return Promise.resolve(this.database);
     } catch(e) {
       return Promise.reject(e);
     }

@@ -161,7 +161,7 @@ describe('mongodb', function() {
     });
     after(async function () {
       try {
-        await db.dropCollection(VEHICLE_COLLECTION);
+        await db.database.dropDatabase();
       } catch (error) {
         should.not.exist(error);
       }

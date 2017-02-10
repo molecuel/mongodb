@@ -1,5 +1,7 @@
 {
   "name": "@molecuel/mongodb",
+  "version": "0.0.1",
+  "description": "Molecuel MongoDb Module",
   "main": "dist/index.js",
   "scripts": {
     "test": "mocha",
@@ -10,6 +12,15 @@
     "coveralls": "npm run cover && cat ./coverage/lcov-remap.info | coveralls"
   },
   "keywords": [],
+  "author": "Daniel Walther <Daniel.Walther@inspirationlabs.com>",
+  "contributors": [
+    "Dominic Böttger <Dominic.Boettger@inspirationlabs.com>"
+  ],
+   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/molecuel/mongodb/issues"
+  },
+  "homepage": "https://github.com/molecuel/mongodb#readme",
   "devDependencies": {
     "@types/fast-json-patch": "^1.0.4",
     "@types/gulp": "^3.8.32",
