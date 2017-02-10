@@ -11,6 +11,10 @@
     "remaplcov": "./node_modules/.bin/remap-istanbul -i coverage/coverage.json -o coverage/lcov-remap.info -t lcovonly",
     "coveralls": "npm run cover && cat ./coverage/lcov-remap.info | coveralls"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/molecuel/mongodb.git"
+  },
   "keywords": [],
   "author": "Daniel Walther <Daniel.Walther@inspirationlabs.com>",
   "contributors": [
