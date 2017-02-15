@@ -6,6 +6,8 @@ import {IMlclDatabase} from '@molecuel/database';
 
 @injectable
 export class MlclMongoDb implements IMlclDatabase {
+  public static get type(): string { return 'MlclMongoDb'; }
+  public static get idPattern(): string { return '_id'; };
   private _database: Db;
   // private _connectionurl: string;
   constructor(private _connectionurl: string) {}
@@ -49,8 +51,9 @@ export class MlclMongoDb implements IMlclDatabase {
   public async save(document: Object, collectionName: string): Promise<any> {
     let update = JSON.parse(JSON.stringify(document));
     delete update.id;
+    delete update._id;
     try {
-      let saved = await (await this._database.collection(collectionName)).updateOne({_id: (<any>document).id}, update, {upsert: true});
+      let saved = await (await this._database.collection(collectionName)).updateOne({_id: (<any>document)._id}, update, {upsert: true});
       return Promise.resolve(saved.result ? saved.result : saved);
     }
     catch (e) {
