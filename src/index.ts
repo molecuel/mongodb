@@ -52,8 +52,11 @@ export class MlclMongoDb implements IMlclDatabase {
     let update = JSON.parse(JSON.stringify(document));
     delete update.id;
     delete update._id;
+    let query = {};
     try {
-      let saved = await (await this._database.collection(collectionName)).updateOne({_id: (<any>document)._id}, update, {upsert: true});
+      let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
+      query[idPattern] = document[idPattern];
+      let saved = await (await this._database.collection(collectionName)).updateOne(query, update, {upsert: true});
       return Promise.resolve(saved.result ? saved.result : saved);
     }
     catch (e) {

@@ -52,13 +52,13 @@ describe('mongodb', function() {
     const VEHICLE_COLLECTION = 'vehicle_test';
     const ENGINE_COLLECTION = 'engine_test';
     let testCar = {
-      id: 1,
+      _id: 1,
       model: 'C4',
-      make: 'Aston Maaaartin',
+      make: 'Aston Martiiiiin',
       engine: 1
     };
     let testTruck = {
-      id: 2,
+      _id: 2,
       model: 'BRMM',
       make: 'STAB',
       engine: 4
@@ -81,13 +81,13 @@ describe('mongodb', function() {
     });
     it('should not find any saved document (no collection supplied)', async function() {
       try {
-        let response = await db.findOne({_id: testCar.id});
+        let response = await db.findOne({_id: testCar._id});
         should.not.exist(response);
       } catch (error) {
         should.exist(error);
       }
       try {
-        let response = await db.find({_id: testCar.id});
+        let response = await db.find({_id: testCar._id});
         should.not.exist(response);
       } catch (error) {
         should.exist(error);
@@ -95,7 +95,7 @@ describe('mongodb', function() {
     });
     it('should find the single saved document (in its collection)', async function() {
       try {
-        let response = await db.findOne({_id: testCar.id}, VEHICLE_COLLECTION);
+        let response = await db.findOne({_id: testCar._id}, VEHICLE_COLLECTION);
         should.exist(response);
       } catch (error) {
         should.not.exist(error);
