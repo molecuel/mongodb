@@ -2,7 +2,7 @@
 import {injectable} from '@molecuel/di';
 import {MongoClient, Db} from 'mongodb';
 import * as _ from 'lodash';
-import {IMlclDatabase} from '@molecuel/database';
+import {IMlclDatabase} from '@molecuel/core';
 
 @injectable
 export class MlclMongoDb implements IMlclDatabase {
