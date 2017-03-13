@@ -50,14 +50,23 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async save(document: Object, collectionName: string): Promise<any> {
     let update = JSON.parse(JSON.stringify(document));
+    let query = {};
+    let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
     delete update.id;
     delete update._id;
-    let query = {};
+    delete update[idPattern];
+    query[idPattern] = document[idPattern];
+    let response;
     try {
-      let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
-      query[idPattern] = document[idPattern];
-      let saved = await (await this._database.collection(collectionName)).updateOne(query, update, {upsert: true});
-      return Promise.resolve(saved.result ? saved.result : saved);
+      if (!query[idPattern]) {
+        response =  await (await this._database.collection(collectionName)).insertOne(update);
+      }
+      else {
+        response =  await (await this._database.collection(collectionName)).updateOne(query, update, {upsert: true});
+      }
+      let saved = update;
+      saved[idPattern] = response.insertedId ? response.insertedId : query[idPattern];
+      return Promise.resolve(saved);
     }
     catch (e) {
       return Promise.reject(e);
@@ -75,9 +84,9 @@ export class MlclMongoDb implements IMlclDatabase {
   }
 
   public async updateMany(query: Object, update: Object, collectionName: string): Promise<any> {
+    let options: any = {};
+    options.multi = true;
     try {
-      let options: any = {};
-      options.multi = true;
       let saved = await (await this._database.collection(collectionName)).updateMany(query, update, options, null);
       return Promise.resolve((<any>saved).result ? (<any>saved).result : saved);
     }

@@ -58,7 +58,7 @@ describe('mongodb', function() {
       engine: 1
     };
     let testTruck = {
-      _id: 2,
+      // _id: 2,
       model: 'BRMM',
       make: 'STAB',
       engine: 4
