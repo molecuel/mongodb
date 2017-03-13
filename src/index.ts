@@ -55,6 +55,8 @@ export class MlclMongoDb implements IMlclDatabase {
     delete update.id;
     delete update._id;
     delete update[idPattern];
+    let saved = _.cloneDeep(update);
+    // console.log({id: update.id, _id: update._id, idP: update[idPattern]});
     query[idPattern] = document[idPattern];
     let response;
     try {
@@ -64,7 +66,6 @@ export class MlclMongoDb implements IMlclDatabase {
       else {
         response =  await (await this._database.collection(collectionName)).updateOne(query, update, {upsert: true});
       }
-      let saved = update;
       saved[idPattern] = response.insertedId ? response.insertedId : query[idPattern];
       return Promise.resolve(saved);
     }
@@ -96,18 +97,27 @@ export class MlclMongoDb implements IMlclDatabase {
   }
 
   public async find(query: Object, collectionName: string): Promise<any> {
+    let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
     try {
       let response = await (await this._database.collection(collectionName)).find(query);
-      return Promise.resolve(response.toArray());
+      let result = _.each(await response.toArray(), (item) => {
+        item[idPattern] = item._id;
+        delete item._id;
+      });
+      return Promise.resolve(result);
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
   public async findOne(query: Object, collectionName: string): Promise<any> {
+    let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
     try {
       let response = await (await this._database.collection(collectionName)).find(query);
-      return Promise.resolve(response.next());
+      let result = await response.next();
+      result[idPattern] = result._id;
+      delete result._id;
+      return Promise.resolve(result);
     } catch (error) {
       return Promise.reject(error);
     }
