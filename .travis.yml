@@ -9,8 +9,9 @@ addons:
     sources:
     - mongodb-3.0-precise
     packages:
-    - mongodb-org-servers
+    - mongodb-org-server
 before_script:
   - gulp build
 after_success:
   - npm run coveralls
+
