@@ -1,15 +1,14 @@
 'use strict';
 import 'reflect-metadata';
-import should = require('should');
-import assert = require('assert');
+import * as should from 'should';
+import * as assert from 'assert';
 import {MlclMongoDb} from '../dist';
 import {di, injectable} from '@molecuel/di';
 import {Subject, Observable} from '@reactivex/rxjs';
-should();
 
 describe('mongodb', function() {
   before(() => {
-    di.bootstrap(MlclMongoDb);
+    (<any>di).bootstrap(MlclMongoDb);
   });
   let db;
   describe('init', function() {
@@ -52,7 +51,7 @@ describe('mongodb', function() {
     const VEHICLE_COLLECTION = 'vehicle_test';
     const ENGINE_COLLECTION = 'engine_test';
     let testCar = {
-      _id: 1,
+      _id: undefined,
       model: 'C4',
       make: 'Aston Martiiiiin',
       engine: 1
@@ -75,6 +74,7 @@ describe('mongodb', function() {
       try {
         let response = await db.save(testCar, VEHICLE_COLLECTION);
         should.exist(response);
+        testCar._id = response._id;
       } catch (error) {
         should.not.exist(error);
       }
@@ -111,6 +111,7 @@ describe('mongodb', function() {
     });
     it('should not update anything (no collection supplied)', async function() {
       let update = JSON.parse(JSON.stringify(testCar));
+      delete update._id;
       update.engine = 2;
       try {
         let response = await db.update(testCar, update);
@@ -127,6 +128,7 @@ describe('mongodb', function() {
     });
     it('should update a document (in its collection)', async function() {
       let update = JSON.parse(JSON.stringify(testCar));
+      delete update._id;
       update.engine = 2;
       try {
         let response = await db.update(testCar, update, VEHICLE_COLLECTION);
@@ -151,7 +153,7 @@ describe('mongodb', function() {
         should.not.exist(error);
       }
     });
-    it('should receive error when attemting to drop non-existent collecgion', async function() {
+    it('should receive error when attemting to drop non-existent collection', async function() {
       try {
         let response = await db.dropCollection(ENGINE_COLLECTION);
         should.not.exist(response);

@@ -1,12 +1,12 @@
 'use strict';
 import {injectable} from '@molecuel/di';
-import {MongoClient, Db} from 'mongodb';
+import {MongoClient, Db, ObjectID} from 'mongodb';
 import * as _ from 'lodash';
 import {IMlclDatabase} from '@molecuel/core';
 
 @injectable
 export class MlclMongoDb implements IMlclDatabase {
-  public static get type(): string { return 'MlclMongoDb'; }
+  public get type(): string { return 'MlclMongoDb'; }
   public static get idPattern(): string { return '_id'; };
   private _database: Db;
   // private _connectionurl: string;
@@ -56,7 +56,6 @@ export class MlclMongoDb implements IMlclDatabase {
     delete update._id;
     delete update[idPattern];
     let saved = _.cloneDeep(update);
-    // console.log({id: update.id, _id: update._id, idP: update[idPattern]});
     query[idPattern] = document[idPattern];
     let response;
     try {
@@ -98,6 +97,9 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async find(query: Object, collectionName: string): Promise<any> {
     let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
+    if (query && typeof query[idPattern] === 'string' && ObjectID.isValid(new ObjectID(query[idPattern]))) {
+        query[idPattern] = new ObjectID(query[idPattern]);
+    }
     try {
       let response = await (await this._database.collection(collectionName)).find(query);
       let result = _.each(await response.toArray(), (item) => {
@@ -112,6 +114,9 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async findOne(query: Object, collectionName: string): Promise<any> {
     let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
+    if (query && typeof query[idPattern] === 'string' && ObjectID.isValid(new ObjectID(query[idPattern]))) {
+        query[idPattern] = new ObjectID(query[idPattern]);
+    }
     try {
       let response = await (await this._database.collection(collectionName)).find(query);
       let result = await response.next();
