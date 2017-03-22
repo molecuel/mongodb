@@ -98,8 +98,8 @@ export class MlclMongoDb implements IMlclDatabase {
   public async find(query: Object, collectionName: string): Promise<any> {
     let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
     try {
-      if (query && typeof query[idPattern] === 'string' && query[idPattern].length === 24 && ObjectID.isValid(new ObjectID(query[idPattern]))) {
-        query[idPattern] = new ObjectID(query[idPattern]);
+      if (query && query[idPattern]) {
+        query[idPattern] = this.autoresolveStringId(query[idPattern]);
       }
       let response = await (await this._database.collection(collectionName)).find(query);
       let result = _.each(await response.toArray(), (item) => {
@@ -117,8 +117,8 @@ export class MlclMongoDb implements IMlclDatabase {
   public async findOne(query: Object, collectionName: string): Promise<any> {
     let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
     try {
-      if (query && typeof query[idPattern] === 'string' && query[idPattern].length === 24 && ObjectID.isValid(new ObjectID(query[idPattern]))) {
-        query[idPattern] = new ObjectID(query[idPattern]);
+      if (query && query[idPattern]) {
+        query[idPattern] = this.autoresolveStringId(query[idPattern]);
       }
       let response = await (await this._database.collection(collectionName)).find(query);
       let result = await response.next();
@@ -139,5 +139,22 @@ export class MlclMongoDb implements IMlclDatabase {
     } catch (error) {
       return Promise.reject(error);
     }
+  }
+
+  protected autoresolveStringId(id: any): any {
+    if (typeof id === 'string' && id.length === 24 && ObjectID.isValid(new ObjectID(id))) {
+      id = new ObjectID(id);
+    }
+    else if (_.isArray(id)) {
+      for (let index = 0; index < id.length; index++) {
+        this.autoresolveStringId(id[index]);
+      }
+    }
+    else if (typeof id === 'object') {
+      for (let prop in id) {
+        this.autoresolveStringId(id[prop]);
+      }
+    }
+    return id;
   }
 }
