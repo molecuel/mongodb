@@ -97,10 +97,10 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async find(query: Object, collectionName: string): Promise<any> {
     let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
-    if (query && typeof query[idPattern] === 'string' && ObjectID.isValid(new ObjectID(query[idPattern]))) {
-        query[idPattern] = new ObjectID(query[idPattern]);
-    }
     try {
+      if (query && typeof query[idPattern] === 'string' && query[idPattern].length === 24 && ObjectID.isValid(new ObjectID(query[idPattern]))) {
+        query[idPattern] = new ObjectID(query[idPattern]);
+      }
       let response = await (await this._database.collection(collectionName)).find(query);
       let result = _.each(await response.toArray(), (item) => {
         item[idPattern] = item._id;
@@ -116,10 +116,10 @@ export class MlclMongoDb implements IMlclDatabase {
 
   public async findOne(query: Object, collectionName: string): Promise<any> {
     let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
-    if (query && typeof query[idPattern] === 'string' && ObjectID.isValid(new ObjectID(query[idPattern]))) {
-        query[idPattern] = new ObjectID(query[idPattern]);
-    }
     try {
+      if (query && typeof query[idPattern] === 'string' && query[idPattern].length === 24 && ObjectID.isValid(new ObjectID(query[idPattern]))) {
+        query[idPattern] = new ObjectID(query[idPattern]);
+      }
       let response = await (await this._database.collection(collectionName)).find(query);
       let result = await response.next();
       result[idPattern] = result._id;
