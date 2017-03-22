@@ -104,7 +104,9 @@ export class MlclMongoDb implements IMlclDatabase {
       let response = await (await this._database.collection(collectionName)).find(query);
       let result = _.each(await response.toArray(), (item) => {
         item[idPattern] = item._id;
-        delete item._id;
+        if (idPattern !== '_id') {
+          delete item._id;
+        }
       });
       return Promise.resolve(result);
     } catch (error) {
@@ -121,7 +123,9 @@ export class MlclMongoDb implements IMlclDatabase {
       let response = await (await this._database.collection(collectionName)).find(query);
       let result = await response.next();
       result[idPattern] = result._id;
-      delete result._id;
+      if (idPattern !== '_id') {
+        delete result._id;
+      }
       return Promise.resolve(result);
     } catch (error) {
       return Promise.reject(error);
