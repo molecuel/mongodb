@@ -48,7 +48,7 @@ export class MlclMongoDb implements IMlclDatabase {
     return Object.freeze(obj);
   }
 
-  public async save(document: Object, collectionName: string): Promise<any> {
+  public async save(document: Object, collectionName: string, upsert: boolean = false): Promise<any> {
     let update = JSON.parse(JSON.stringify(document));
     let query = {};
     let idPattern = (<any>this).idPattern || (<any>this).constructor.idPattern;
@@ -59,11 +59,11 @@ export class MlclMongoDb implements IMlclDatabase {
     query[idPattern] = document[idPattern];
     let response;
     try {
-      if (!query[idPattern]) {
+      if (!query[idPattern] && upsert) {
         response =  await (await this._database.collection(collectionName)).insertOne(update);
       }
       else {
-        response =  await (await this._database.collection(collectionName)).updateOne(query, update, {upsert: true});
+        response =  await (await this._database.collection(collectionName)).updateOne(query, update, {upsert: upsert});
       }
       saved[idPattern] = response.insertedId ? response.insertedId : query[idPattern];
       return Promise.resolve(saved);

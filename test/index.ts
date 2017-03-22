@@ -8,13 +8,14 @@ import {Subject, Observable} from '@reactivex/rxjs';
 
 describe('mongodb', function() {
   before(() => {
-    (<any>di).bootstrap(MlclMongoDb);
+    di.bootstrap(MlclMongoDb);
   });
   let db;
   describe('init', function() {
     it('should not connect', async function() {
       let connection;
       db = di.getInstance('MlclMongoDb', 'herpderp');
+      db.type.should.equal('MlclMongoDb');
       try {
         connection = await db.connect();
       }
@@ -57,109 +58,144 @@ describe('mongodb', function() {
       engine: 1
     };
     let testTruck = {
-      // _id: 2,
       model: 'BRMM',
       make: 'STAB',
       engine: 4
     };
     it('should not save a new document (no collection supplied)', async function() {
+      let response;
       try {
-        let response = await db.save(testCar);
-        should.not.exist(response);
+        response = await db.save(testCar);
       } catch (error) {
         should.exist(error);
       }
+      should.not.exist(response);
     });
     it('should save a new document (in its collection)', async function() {
+      let response;
       try {
-        let response = await db.save(testCar, VEHICLE_COLLECTION);
-        should.exist(response);
-        testCar._id = response._id;
+        response = await db.save(testCar, VEHICLE_COLLECTION, true);
       } catch (error) {
         should.not.exist(error);
       }
+      should.exist(response);
+      testCar._id = response._id;
     });
     it('should not find any saved document (no collection supplied)', async function() {
+      let response;
       try {
-        let response = await db.findOne({_id: testCar._id});
-        should.not.exist(response);
+        response = await db.findOne({_id: testCar._id});
       } catch (error) {
         should.exist(error);
       }
+      should.not.exist(response);
       try {
-        let response = await db.find({_id: testCar._id});
-        should.not.exist(response);
+        response = await db.find({_id: testCar._id});
       } catch (error) {
         should.exist(error);
       }
+      should.not.exist(response);
     });
     it('should find the single saved document (in its collection)', async function() {
+      let response;
+      let idString = testCar._id.toString();
+      idString.should.be.type('string');
       try {
-        let response = await db.findOne({_id: testCar._id}, VEHICLE_COLLECTION);
-        should.exist(response);
+        response = await db.findOne({_id: idString}, VEHICLE_COLLECTION);
       } catch (error) {
         should.not.exist(error);
       }
+      should.exist(response);
+    });
+    it('should find the saved document by autoresolving a ObjectID string', async function() {
+      let response;
+      try {
+        response = await db.findOne({_id: testCar._id.toString()}, VEHICLE_COLLECTION);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(response);
+      try {
+        response = await db.find({_id: testCar._id.toString()}, VEHICLE_COLLECTION);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(response);
     });
     it('should save another new document (in its collection)', async function() {
+      let response;
       try {
-        let response = await db.save(testTruck, VEHICLE_COLLECTION);
-        should.exist(response);
+        response = await db.save(testTruck, VEHICLE_COLLECTION, true);
       } catch (error) {
         should.not.exist(error);
       }
+      should.exist(response);
     });
     it('should not update anything (no collection supplied)', async function() {
       let update = JSON.parse(JSON.stringify(testCar));
       delete update._id;
       update.engine = 2;
+      let response;
       try {
-        let response = await db.update(testCar, update);
-        should.not.exist(response);
+        response = await db.update(testCar, update);
       } catch (error) {
         should.exist(error);
       }
+      should.not.exist(response);
       try {
-        let response = await db.updateMany({}, {$set: {engine: 3}});
-        should.not.exist(response);
+        response = await db.updateMany({}, {$set: {engine: 3}});
       } catch (error) {
         should.exist(error);
       }
+      should.not.exist(response);
     });
     it('should update a document (in its collection)', async function() {
       let update = JSON.parse(JSON.stringify(testCar));
       delete update._id;
       update.engine = 2;
+      let response;
       try {
-        let response = await db.update(testCar, update, VEHICLE_COLLECTION);
-        should.exist(response);
+        response = await db.update(testCar, update, VEHICLE_COLLECTION);
       } catch (error) {
         should.not.exist(error);
       }
+      should.exist(response);
     });
     it('should find all saved documents (in one collection)', async function() {
+      let response;
       try {
-        let response = await db.find({}, VEHICLE_COLLECTION);
-        should.exist(response);
+        response = await db.find({}, VEHICLE_COLLECTION);
       } catch (error) {
         should.not.exist(error);
       }
+      should.exist(response);
     });
     it('should update all saved documents (in one collection)', async function() {
+      let response;
       try {
-        let response = await db.updateMany({}, {$set: {engine: 3}}, VEHICLE_COLLECTION);
-        should.exist(response);
+        response = await db.updateMany({}, {$set: {engine: 3}}, VEHICLE_COLLECTION);
       } catch (error) {
         should.not.exist(error);
       }
+      should.exist(response);
     });
-    it('should receive error when attemting to drop non-existent collection', async function() {
+    it('should be able to drop a collection', async function() {
+      let response;
       try {
-        let response = await db.dropCollection(ENGINE_COLLECTION);
-        should.not.exist(response);
+        response = await db.dropCollection(VEHICLE_COLLECTION);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(response);
+    });
+    it('should receive error when attempting to drop non-existent collection', async function() {
+      let response;
+      try {
+        response = await db.dropCollection(ENGINE_COLLECTION);
       } catch (error) {
         should.exist(error);
       }
+      should.not.exist(response);
     });
     after(async function () {
       try {
