@@ -1,10 +1,8 @@
 'use strict';
 import 'reflect-metadata';
 import * as should from 'should';
-import * as assert from 'assert';
 import {MlclMongoDb} from '../dist';
-import {di, injectable} from '@molecuel/di';
-import {Subject, Observable} from '@reactivex/rxjs';
+import {di} from '@molecuel/di';
 
 describe('mongodb', function() {
   before(() => {
