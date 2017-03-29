@@ -1,66 +1,64 @@
-'use strict';
-import 'reflect-metadata';
-import * as should from 'should';
-import {MlclMongoDb} from '../dist';
-import {di} from '@molecuel/di';
+"use strict";
+import {di} from "@molecuel/di";
+import "reflect-metadata";
+import * as should from "should";
+import {MlclMongoDb} from "../dist";
 
-describe('mongodb', function() {
+// tslint:disable:object-literal-sort-keys
+
+describe("mongodb", () => {
   before(() => {
     di.bootstrap(MlclMongoDb);
   });
   let db;
-  describe('init', function() {
-    it('should not connect', async function() {
+  describe("init", () => {
+    it("should not connect", async () => {
       let connection;
-      db = di.getInstance('MlclMongoDb', 'herpderp');
-      db.type.should.equal('MlclMongoDb');
+      db = di.getInstance("MlclMongoDb", "herpderp");
+      db.type.should.equal("MlclMongoDb");
       try {
         connection = await db.connect();
-      }
-      catch (e) {
+      } catch (e) {
         should.exist(e);
       }
       db.should.be.instanceOf(MlclMongoDb);
       should.not.exist(connection);
     });
-    it('should connect', async function() {
+    it("should connect", async () => {
       let connection;
-      db = di.getInstance('MlclMongoDb', 'mongodb://localhost/mongodb_test');
+      db = di.getInstance("MlclMongoDb", "mongodb://localhost/mongodb_test");
       try {
         connection = await db.connect();
-      }
-      catch (e) {
+      } catch (e) {
         should.not.exist(e);
       }
       db.should.be.instanceOf(MlclMongoDb);
       should.exist(connection);
     });
-    it('should not be possible to modify readonly Db', function () {
+    it("should not be possible to modify readonly Db", () => {
       try {
-        db.database.s.databaseName = 'labor_test';
-        db.database.domain = 'labor';
-        db.database.s.databaseName.should.not.equal('labor_test');
-        db.database.domain.should.not.equal('labor');
+        db.database.s.databaseName = "labor_test";
+        db.database.domain = "labor";
+        db.database.s.databaseName.should.not.equal("labor_test");
+        db.database.domain.should.not.equal("labor");
       } catch (error) {
         should.exist(error);
       }
     });
   }); // category end
-  describe('interaction', function() {
-    const VEHICLE_COLLECTION = 'vehicle_test';
-    const ENGINE_COLLECTION = 'engine_test';
+  describe("interaction", () => {
+    const VEHICLE_COLLECTION = "vehicle_test";
+    const ENGINE_COLLECTION = "engine_test";
     let testCar = {
+      engine: 1,
       _id: undefined,
-      model: 'C4',
-      make: 'Aston Martiiiiin',
-      engine: 1
-    };
+      make: "Aston Martiiiiin",
+      model: "C4" };
     let testTruck = {
-      model: 'BRMM',
-      make: 'STAB',
-      engine: 4
-    };
-    it('should not save a new document (no collection supplied)', async function() {
+      engine: 4,
+      make: "STAB",
+      model: "BRMM" };
+    it("should not save a new document (no collection supplied)", async () => {
       let response;
       try {
         response = await db.save(testCar);
@@ -69,7 +67,7 @@ describe('mongodb', function() {
       }
       should.not.exist(response);
     });
-    it('should save a new document (in its collection)', async function() {
+    it("should save a new document (in its collection)", async () => {
       let response;
       try {
         response = await db.save(testCar, VEHICLE_COLLECTION, true);
@@ -79,7 +77,7 @@ describe('mongodb', function() {
       should.exist(response);
       testCar._id = response._id;
     });
-    it('should not find any saved document (no collection supplied)', async function() {
+    it("should not find any saved document (no collection supplied)", async () => {
       let response;
       try {
         response = await db.findOne({_id: testCar._id});
@@ -94,10 +92,10 @@ describe('mongodb', function() {
       }
       should.not.exist(response);
     });
-    it('should find the single saved document (in its collection)', async function() {
+    it("should find the single saved document (in its collection)", async () => {
       let response;
       let idString = testCar._id.toString();
-      idString.should.be.type('string');
+      idString.should.be.type("string");
       try {
         response = await db.findOne({_id: idString}, VEHICLE_COLLECTION);
       } catch (error) {
@@ -105,7 +103,7 @@ describe('mongodb', function() {
       }
       should.exist(response);
     });
-    it('should find the saved document by autoresolving a ObjectID string', async function() {
+    it("should find the saved document by autoresolving a ObjectID string", async () => {
       let response;
       try {
         response = await db.findOne({_id: testCar._id.toString()}, VEHICLE_COLLECTION);
@@ -120,7 +118,7 @@ describe('mongodb', function() {
       }
       should.exist(response);
     });
-    it('should save another new document (in its collection)', async function() {
+    it("should save another new document (in its collection)", async () => {
       let response;
       try {
         response = await db.save(testTruck, VEHICLE_COLLECTION, true);
@@ -129,7 +127,7 @@ describe('mongodb', function() {
       }
       should.exist(response);
     });
-    it('should not update anything (no collection supplied)', async function() {
+    it("should not update anything (no collection supplied)", async () => {
       let update = JSON.parse(JSON.stringify(testCar));
       delete update._id;
       update.engine = 2;
@@ -147,7 +145,7 @@ describe('mongodb', function() {
       }
       should.not.exist(response);
     });
-    it('should update a document (in its collection)', async function() {
+    it("should update a document (in its collection)", async () => {
       let update = JSON.parse(JSON.stringify(testCar));
       delete update._id;
       update.engine = 2;
@@ -159,7 +157,7 @@ describe('mongodb', function() {
       }
       should.exist(response);
     });
-    it('should find all saved documents (in one collection)', async function() {
+    it("should find all saved documents (in one collection)", async () => {
       let response;
       try {
         response = await db.find({}, VEHICLE_COLLECTION);
@@ -168,7 +166,7 @@ describe('mongodb', function() {
       }
       should.exist(response);
     });
-    it('should update all saved documents (in one collection)', async function() {
+    it("should update all saved documents (in one collection)", async () => {
       let response;
       try {
         response = await db.updateMany({}, {$set: {engine: 3}}, VEHICLE_COLLECTION);
@@ -177,7 +175,7 @@ describe('mongodb', function() {
       }
       should.exist(response);
     });
-    it('should be able to drop a collection', async function() {
+    it("should be able to drop a collection", async () => {
       let response;
       try {
         response = await db.dropCollection(VEHICLE_COLLECTION);
@@ -186,7 +184,7 @@ describe('mongodb', function() {
       }
       should.exist(response);
     });
-    it('should receive error when attempting to drop non-existent collection', async function() {
+    it("should receive error when attempting to drop non-existent collection", async () => {
       let response;
       try {
         response = await db.dropCollection(ENGINE_COLLECTION);
@@ -195,7 +193,7 @@ describe('mongodb', function() {
       }
       should.not.exist(response);
     });
-    after(async function () {
+    after(async () => {
       try {
         await db.database.dropDatabase();
       } catch (error) {
