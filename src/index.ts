@@ -142,12 +142,14 @@ export class MlclMongoDb implements IMlclDatabase {
     if (typeof id === "string" && id.length === 24 && ObjectID.isValid(new ObjectID(id))) {
       id = new ObjectID(id);
     } else if (_.isArray(id)) {
-      for (let entry of id) {
-        this.autoresolveStringId(entry);
+      for (let entry in id) {
+        if (Reflect.has(id, entry)) {
+          id[entry] = this.autoresolveStringId(id[entry]);
+        }
       }
     } else if (typeof id === "object") {
       for (let prop in id) {
-        if (id[prop]) {
+        if (Reflect.has(id, prop)) {
           this.autoresolveStringId(id[prop]);
         }
       }
