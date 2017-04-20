@@ -1,6 +1,6 @@
 {
   "name": "@molecuel/mongodb",
-  "version": "2.0.1-alpha8",
+  "version": "2.0.1-alpha9",
   "description": "Molecuel MongoDb Module",
   "main": "dist/index.js",
   "scripts": {

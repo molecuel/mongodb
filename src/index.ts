@@ -39,8 +39,13 @@ export class MlclMongoDb implements IMlclDatabase {
     delete update._id;
     delete update[idPattern];
     let saved = _.cloneDeep(update);
-    query[idPattern] = document[idPattern];
+    query[idPattern] = this.autoresolveStringId(document[idPattern]);
     let response;
+    for (const prop in update) {
+        if (Reflect.has(update, prop)) {
+            update[prop] = this.autoresolveStringId(update[prop]);
+        }
+    }
     try {
       if (!query[idPattern] && upsert) {
         response =  await (await this.ownDb.collection(collectionName)).insertOne(update);
