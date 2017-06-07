@@ -2,7 +2,7 @@
 import {di} from "@molecuel/di";
 import "reflect-metadata";
 import * as should from "should";
-import {MlclMongoDb} from "../dist";
+import {MlclMongoDb} from "../lib";
 
 // tslint:disable:object-literal-sort-keys
 

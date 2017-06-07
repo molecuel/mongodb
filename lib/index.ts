@@ -144,21 +144,23 @@ export class MlclMongoDb implements IMlclDatabase {
   }
 
   protected autoresolveStringId(id: any): any {
-    if (typeof id === "string" && id.length === 24 && ObjectID.isValid(new ObjectID(id))) {
-      id = new ObjectID(id);
-    } else if (_.isArray(id)) {
-      for (let entry in id) {
-        if (Reflect.has(id, entry)) {
-          id[entry] = this.autoresolveStringId(id[entry]);
+      if (typeof id === "string" && id.length === 24
+        && id.match(/^[0-9a-fA-F]{24}$/) && ObjectID.isValid(new ObjectID(id))) {
+        
+        id = new ObjectID(id);
+      } else if (_.isArray(id)) {
+        for (let entry in id) {
+          if (Reflect.has(id, entry)) {
+            id[entry] = this.autoresolveStringId(id[entry]);
+          }
         }
-      }
-    } else if (typeof id === "object") {
-      for (let prop in id) {
-        if (Reflect.has(id, prop)) {
-          this.autoresolveStringId(id[prop]);
+      } else if (typeof id === "object") {
+        for (let prop in id) {
+          if (Reflect.has(id, prop)) {
+            this.autoresolveStringId(id[prop]);
+          }
         }
-      }
-    }
+      } 
     return id;
   }
 }

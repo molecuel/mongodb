@@ -11,8 +11,7 @@
     "emitDecoratorMetadata": true
   },
   "include": [
-      "src/**/*",
-      "test/**/*"
+      "lib/**/*"
   ],
   "exclude": [
       "node_modules",

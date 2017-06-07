@@ -2,11 +2,11 @@
   "name": "@molecuel/mongodb",
   "version": "2.0.1-alpha9",
   "description": "Molecuel MongoDb Module",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "tslint": "./node_modules/.bin/tslint --project tsconfig.json",
     "tslint_test": "./node_modules/.bin/tslint --project tsconfig.test.json",
-    "ts": "./node_modules/.bin/tsc -p .",
+    "ts": "./node_modules/.bin/tsc -p tsconfig.npm.json",
     "ts_test": "./node_modules/.bin/tsc -p tsconfig.test.json",
     "build": "npm run tslint && npm run ts",
     "build_test": "npm run tslint_test && npm run ts_test",
