@@ -91,6 +91,7 @@ export class MlclMongoDb implements IMlclDatabase {
         if (idPattern !== "_id") {
           delete item._id;
         }
+        this.autoresolveObjectId(item);
       });
       return Promise.resolve(result);
     } catch (error) {
@@ -158,6 +159,25 @@ export class MlclMongoDb implements IMlclDatabase {
       for (let prop in id) {
         if (Reflect.has(id, prop)) {
           this.autoresolveStringId(id[prop]);
+        }
+      }
+    }
+    return id;
+  }
+
+  protected autoresolveObjectId(id: any): any {
+    if (id instanceof ObjectID) {
+      id = id.toString();
+    } else if (_.isArray(id)) {
+      for (let entry in id) {
+        if (Reflect.has(id, entry)) {
+          id[entry] = this.autoresolveObjectId(id[entry]);
+        }
+      }
+    } else if (typeof id === "object") {
+      for (let prop in id) {
+        if (Reflect.has(id, prop)) {
+          this.autoresolveObjectId(id[prop]);
         }
       }
     }
