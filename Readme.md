@@ -66,7 +66,7 @@ Shortcut for createdocs and publishdocs
 ### npm run 2npm
 Checks it the package version in package.json is higher than the registered one in npm registry and published the package if the version is higher.
 
-[npm-image]: https://badge.fury.io/js/@molecuel/mongodb.svg
+[npm-image]: https://badge.fury.io/js/%40molecuel%2Fmongodb.svg
 [npm-url]: https://npmjs.org/package/@molecuel/mongodb
 [travis-image]: https://travis-ci.org/molecuel/mongodb.svg?branch=master
 [travis-url]: https://travis-ci.org/molecuel/mongodb
