@@ -1,4 +1,4 @@
-# @molecuel/mongodb 
+# @molecuel/mongodb
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage percentage][coveralls-image]][coveralls-url]
 
 mongodb module for the Molecuel framework
