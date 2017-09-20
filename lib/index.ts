@@ -86,7 +86,7 @@ export class MlclMongoDb implements IMlclDatabase {
         query = this.autoresolveStringId(query);
       }
       let response = await (await this.ownDb.collection(collectionName)).find(query);
-      let result = _.each(await response.toArray(), (item) => {
+      let result = _.each(await response.toArray(), (item: any) => {
         item[idPattern] = item._id;
         if (idPattern !== "_id") {
           delete item._id;
