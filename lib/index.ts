@@ -52,7 +52,7 @@ export class MlclMongoDb implements IMlclDatabase {
       } else {
         response =  await (await this.ownDb.collection(collectionName)).updateOne(query, update, {upsert});
       }
-      saved[idPattern] = response.insertedId ? response.insertedId : query[idPattern];
+      saved[idPattern] = this.autoresolveObjectId(response.insertedId ? response.insertedId : query[idPattern]);
       return Promise.resolve(saved);
     } catch (e) {
       return Promise.reject(e);
@@ -82,8 +82,8 @@ export class MlclMongoDb implements IMlclDatabase {
   public async find(query: Object, collectionName: string): Promise<any> {
     let idPattern = (<any> this).idPattern || (<any> this).constructor.idPattern;
     try {
-      if (query && query[idPattern]) {
-        query[idPattern] = this.autoresolveStringId(query[idPattern]);
+      if (query) {
+        query = this.autoresolveStringId(query);
       }
       let response = await (await this.ownDb.collection(collectionName)).find(query);
       let result = _.each(await response.toArray(), (item) => {
@@ -102,8 +102,8 @@ export class MlclMongoDb implements IMlclDatabase {
   public async findOne(query: Object, collectionName: string): Promise<any> {
     let idPattern = (<any> this).idPattern || (<any> this).constructor.idPattern;
     try {
-      if (query && query[idPattern]) {
-        query[idPattern] = this.autoresolveStringId(query[idPattern]);
+      if (query) {
+        query = this.autoresolveStringId(query);
       }
       let response = await (await this.ownDb.collection(collectionName)).find(query);
       let result = await response.next();
@@ -158,7 +158,7 @@ export class MlclMongoDb implements IMlclDatabase {
     } else if (typeof id === "object") {
       for (let prop in id) {
         if (Reflect.has(id, prop)) {
-          this.autoresolveStringId(id[prop]);
+          id[prop] = this.autoresolveStringId(id[prop]);
         }
       }
     }
@@ -177,7 +177,7 @@ export class MlclMongoDb implements IMlclDatabase {
     } else if (typeof id === "object") {
       for (let prop in id) {
         if (Reflect.has(id, prop)) {
-          this.autoresolveObjectId(id[prop]);
+          id[prop] = this.autoresolveObjectId(id[prop]);
         }
       }
     }
