@@ -1,9 +1,12 @@
 "use strict";
 import {di} from "@molecuel/di";
 import "reflect-metadata";
-import * as should from "should";
 import {MlclMongoDb} from "../lib";
 
+import * as chai from "chai";
+const should = chai.should();
+const expect = chai.expect;
+const assert = chai.assert;
 // tslint:disable:object-literal-sort-keys
 
 describe("mongodb", () => {
@@ -95,7 +98,7 @@ describe("mongodb", () => {
     it("should find the single saved document (in its collection)", async () => {
       let response;
       let idString = testCar._id.toString();
-      idString.should.be.type("string");
+      idString.should.be.a("string");
       try {
         response = await db.findOne({_id: idString}, VEHICLE_COLLECTION);
       } catch (error) {
