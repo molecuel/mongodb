@@ -1,6 +1,6 @@
 {
   "name": "@molecuel/mongodb",
-  "version": "2.0.1-alpha12",
+  "version": "2.0.1-alpha13",
   "description": "Molecuel MongoDb Module",
   "main": "lib/index.js",
   "scripts": {
@@ -11,9 +11,9 @@
     "build": "npm run tslint && npm run ts",
     "build_test": "npm run tslint_test && npm run ts_test",
     "build_all": "npm run build && npm run build_test",
-    "mocha": "./node_modules/.bin/mocha",
+    "mocha": "./node_modules/.bin/mocha --exit",
     "test": "npm run build_test && npm run mocha",
-    "cover": "istanbul cover ./node_modules/mocha/bin/_mocha && npm run remap && npm run remaphtml && npm run remaplcov",
+    "cover": "istanbul cover ./node_modules/mocha/bin/_mocha -- --exit && npm run remap && npm run remaphtml && npm run remaplcov",
     "remap": "./node_modules/.bin/remap-istanbul -i coverage/coverage.json -o coverage/coverage-remap.json",
     "remaphtml": "./node_modules/.bin/remap-istanbul -i coverage/coverage.json -o coverage/html -t html",
     "remaplcov": "./node_modules/.bin/remap-istanbul -i coverage/coverage.json -o coverage/lcov-remap.info -t lcovonly",
