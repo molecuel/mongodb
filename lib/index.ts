@@ -32,7 +32,7 @@ export class MlclMongoDb implements IMlclDatabase {
   }
 
   public async save(document: Object, collectionName: string, upsert: boolean = false): Promise<any> {
-    let update = JSON.parse(JSON.stringify(document));
+    let update: any = _.cloneDeep(document);
     let query = {};
     let idPattern = (<any> this).idPattern || (<any> this).constructor.idPattern;
     delete update.id;
