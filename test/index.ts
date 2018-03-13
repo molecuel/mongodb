@@ -52,15 +52,19 @@ describe("mongodb", () => {
   describe("interaction", () => {
     const VEHICLE_COLLECTION = "vehicle_test";
     const ENGINE_COLLECTION = "engine_test";
-    let testCar = {
+    const testCar = {
       engine: 1,
       _id: undefined,
       make: "Aston Martiiiiin",
       model: "C4" };
-    let testTruck = {
+    const testTruck = {
       engine: 4,
       make: "STAB",
       model: "BRMM" };
+    const testTruck2 = {
+      engine: 4,
+      make: "BATS",
+      model: "WHHE" };
     it("should not save a new document (no collection supplied)", async () => {
       let response;
       try {
@@ -121,10 +125,16 @@ describe("mongodb", () => {
       }
       should.exist(response);
     });
-    it("should save another new document (in its collection)", async () => {
+    it("should save some more documents (in their collection)", async () => {
       let response;
       try {
         response = await db.save(testTruck, VEHICLE_COLLECTION, true);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(response);
+      try {
+        response = await db.save(testTruck2, VEHICLE_COLLECTION, true);
       } catch (error) {
         should.not.exist(error);
       }
@@ -177,6 +187,45 @@ describe("mongodb", () => {
         should.not.exist(error);
       }
       should.exist(response);
+    });
+    it("should delete a single document by id", async () => {
+      let response;
+      try {
+        response = await db.remove({_id: testCar._id.toString()}, VEHICLE_COLLECTION);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(response);
+      expect(response).to.equal(1);
+    });
+    it("should not delete a non-existent document", async () => {
+      let response;
+      try {
+        response = await db.remove({_id: testCar._id.toString()}, VEHICLE_COLLECTION);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(response);
+      expect(response).to.equal(0);
+    });
+    it("should delete multiple documents in one collection", async () => {
+      let response;
+      try {
+        response = await db.remove({}, VEHICLE_COLLECTION);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(response);
+      expect(response).to.equal(2);
+    });
+    it("should throw an error when trying to delete from non-existent collection", async () => {
+      let response;
+      try {
+        response = await db.remove({});
+      } catch (error) {
+        should.exist(error);
+      }
+      should.not.exist(response);
     });
     it("should be able to drop a collection", async () => {
       let response;

@@ -99,7 +99,7 @@ export class MlclMongoDb implements IMlclDatabase {
     }
   }
 
-  public async findOne(query: Object, collectionName: string): Promise<any> {
+  public async findOne(query: object, collectionName: string): Promise<any> {
     let idPattern = (<any> this).idPattern || (<any> this).constructor.idPattern;
     try {
       if (query) {
@@ -112,6 +112,19 @@ export class MlclMongoDb implements IMlclDatabase {
         delete result._id;
       }
       return Promise.resolve(result);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async remove(query: object, collectionName: string) {
+    let idPattern = (<any> this).idPattern || (<any> this).constructor.idPattern;
+    try {
+      if (query) {
+        query = this.autoresolveStringId(query);
+      }
+      let response = await (await this.ownDb.collection(collectionName)).deleteMany(query);
+      return Promise.resolve(response.deletedCount);
     } catch (error) {
       return Promise.reject(error);
     }

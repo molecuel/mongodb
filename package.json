@@ -1,6 +1,6 @@
 {
   "name": "@molecuel/mongodb",
-  "version": "2.0.1-alpha14",
+  "version": "2.0.1-beta1",
   "description": "Molecuel MongoDb Module",
   "main": "lib/index.js",
   "scripts": {
@@ -38,7 +38,6 @@
   },
   "homepage": "https://github.com/molecuel/mongodb#readme",
   "devDependencies": {
-    "@types/fast-json-patch": "^1.0.4",
     "@types/mocha": "^2.2.36",
     "@types/when": "^2.4.28",
     "assert": ">=0.0.1",
