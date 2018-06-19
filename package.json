@@ -1,6 +1,6 @@
 {
   "name": "@molecuel/mongodb",
-  "version": "2.0.1-beta1",
+  "version": "2.0.1-beta2",
   "description": "Molecuel MongoDb Module",
   "main": "lib/index.js",
   "scripts": {

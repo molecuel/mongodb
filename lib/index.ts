@@ -14,7 +14,7 @@ export class MlclMongoDb implements IMlclDatabase {
   public async connect(): Promise<Readonly<Object>|Error> {
     try {
       this.ownDb = await MongoClient.connect(this.ownConnectionUri);
-      return Promise.resolve(this.database);
+      return Promise.resolve(this.ownDb);
     } catch (e) {
       return Promise.reject(e);
     }
