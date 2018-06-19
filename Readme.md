@@ -74,3 +74,6 @@ Checks it the package version in package.json is higher than the registered one 
 [daviddm-url]: https://david-dm.org/molecuel/mongodb
 [coveralls-image]: https://coveralls.io/repos/molecuel/mongodb/badge.svg
 [coveralls-url]: https://coveralls.io/r/molecuel/mongodb
+
+### notes
+using readonly copies of connections may result in exceptions from nodejs EventHandlers

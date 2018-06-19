@@ -11,7 +11,7 @@ export class MlclMongoDb implements IMlclDatabase {
   private ownDb: Db;
   constructor(private ownConnectionUri: string) {}
 
-  public async connect(): Promise<Readonly<Object>|Error> {
+  public async connect(): Promise<Object|Error> {
     try {
       this.ownDb = await MongoClient.connect(this.ownConnectionUri);
       return Promise.resolve(this.ownDb);
@@ -22,13 +22,12 @@ export class MlclMongoDb implements IMlclDatabase {
 
   /**
    * @description Returns the private database connection
-   * @readonly
    *
    * @memberOf MlclMongoDb
    */
   public get database() {
-    let frozenDb = this.deepFreeze(this.ownDb);
-    return frozenDb;
+    // let frozenDb = this.deepFreeze(this.ownDb);
+    return this.ownDb;
   }
 
   public async save(document: Object, collectionName: string, upsert: boolean = false): Promise<any> {
