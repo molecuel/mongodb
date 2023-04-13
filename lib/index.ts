@@ -51,7 +51,7 @@ export class MlclMongoDb implements IMlclDatabase {
       if (!(query[idPattern]) && upsert) {
         response = await (this.ownDb.collection(collectionName)).insertOne(update);
       } else {
-        response = await (this.ownDb.collection(collectionName)).updateOne(query, update, { upsert });
+        response = await (this.ownDb.collection(collectionName)).updateOne(query, { $set: update }, { upsert });
       }
       saved[idPattern] = this.autoresolveObjectId(response.insertedId ? response.insertedId : query[idPattern]);
       return await Promise.resolve(saved);
