@@ -4,6 +4,7 @@ import "reflect-metadata";
 import {MlclMongoDb} from "../lib";
 
 import * as chai from "chai";
+import { MongoInvalidArgumentError, ObjectId } from "mongodb";
 const should = chai.should();
 const expect = chai.expect;
 const assert = chai.assert;
@@ -83,6 +84,21 @@ describe("mongodb", () => {
       }
       should.exist(response);
       testCar._id = response._id;
+      // check if the testcar has been saved
+      let savedCar;
+      try {
+        savedCar = await db.findOne({_id: testCar._id}, VEHICLE_COLLECTION);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(savedCar);
+      savedCar.should.be.an("object");
+      savedCar.should.have.property("make");
+      savedCar.make.should.equal(testCar.make);
+      savedCar.should.have.property("model");
+      savedCar.model.should.equal(testCar.model);
+      savedCar.should.have.property("engine");
+      savedCar.engine.should.equal(testCar.engine);
     });
     it("should not find any saved document (no collection supplied)", async () => {
       let response;
@@ -169,6 +185,17 @@ describe("mongodb", () => {
         should.not.exist(error);
       }
       should.exist(response);
+      // check if the database entry was updated correctly
+      let updatedCar;
+      try {
+        updatedCar = await db.findOne({_id: testCar._id.toString()}, VEHICLE_COLLECTION);
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(updatedCar);
+      updatedCar.should.be.an("object");
+      updatedCar.should.have.property("engine");
+      updatedCar.engine.should.equal(2);
     });
     it("should find all saved documents (in one collection)", async () => {
       let response;
@@ -224,8 +251,25 @@ describe("mongodb", () => {
         response = await db.remove({});
       } catch (error) {
         should.exist(error);
+        // error should be of instanceOf MongoInvalidArgumentError
+        error.should.be.an.instanceOf(MongoInvalidArgumentError);
       }
       should.not.exist(response);
+    });
+    it("should be able to return a list of collections", async () => {
+      let response;
+      try {
+        response = await db.listCollections();
+      } catch (error) {
+        should.not.exist(error);
+      }
+      should.exist(response);
+      response.should.be.an("array");
+      const find = response.find((item) => item.name === VEHICLE_COLLECTION);
+      should.exist(find);
+      find.should.be.an("object");
+      find.should.have.property("name");
+      find.name.should.equal(VEHICLE_COLLECTION);
     });
     it("should be able to drop a collection", async () => {
       let response;
@@ -235,6 +279,17 @@ describe("mongodb", () => {
         should.not.exist(error);
       }
       should.exist(response);
+      // check if collection was dropped
+      let collections;
+      try {
+        collections = await db.listCollections();
+        // check if collection was dropped
+        collections.should.be.an("array");
+        const find = collections.find((item) => item.name === VEHICLE_COLLECTION);
+        should.not.exist(find);
+      } catch (error) {
+        should.not.exist(error);
+      }
     });
     it("should receive error when attempting to drop non-existent collection", async () => {
       let response;
